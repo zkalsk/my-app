@@ -3,7 +3,7 @@ pipeline {
     parameters {
         gitParameter name: 'TAG',
                      type: 'PT_TAG',
-                     defaultValue: 'master'
+                     defaultValue: 'v1.0.0'
     }
     stages {
         stage('Example') {
