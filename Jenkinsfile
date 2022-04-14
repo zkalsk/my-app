@@ -6,7 +6,7 @@ pipeline {
                      defaultValue: 'v1.0.0'
     }
     stages {
-        stage('Example') {
+        stage('checkout code/scm') {
             steps {
                 checkout([$class: 'GitSCM',
                           branches: [[name: "${params.TAG}"]],
@@ -18,5 +18,13 @@ pipeline {
                         ])
             }
         }
+	stage('build') {
+		steps {
+			script {
+				dockerImage = docker.build("wlffjaso/test")
+			}
+		}
+	}
     }
 }
+
