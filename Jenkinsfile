@@ -40,7 +40,7 @@ pipeline {
 			checkout([$class: 'GitSCM',
                                   branches: [[name: '*/main']],
                                   extensions: [],
-                                  userRemoteConfigs: [[url: 'https://github.com/zkalsk/my-app.git']]
+                                  userRemoteConfigs: [[credentialsId: 'jenkins', url: 'https://github.com/zkalsk/my-app.git']]
                         ])
 			script {
 				sh "sed -i 's/test:.*/test:v1.0.1/g' nginx.yaml"
