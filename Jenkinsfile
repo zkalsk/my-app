@@ -36,11 +36,19 @@ pipeline {
 	}
 	stage('k8s manifest update') {
 		steps {
-			sh "sed -i 's/test:.*/test:v1.0.1/g' nginx.yaml"
-			sh "git add nginx.yaml"
-			sh "git commit -m '[update] image tag change'"
-			sh "git tag -a v1.0.1 -m 'v1.0.1'"
-			sh "git push origin main --tags"
+			deleteDir()
+			checkout([$class: 'GitSCM',
+                                  branches: [[name: '*/main']],
+                                  extensions: [],
+                                  userRemoteConfigs: [[url: 'https://github.com/zkalsk/my-app.git']]
+                        ])
+			script {
+				sh "sed -i 's/test:.*/test:v1.0.1/g' nginx.yaml"
+				sh "git add nginx.yaml"
+				sh "git commit -m '[update] image tag change'"
+				sh "git tag -a v1.0.1 -m 'v1.0.1'"
+				sh "git push origin main --tags"
+			}
 		}
 	}
    }
