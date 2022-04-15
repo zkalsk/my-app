@@ -43,11 +43,15 @@ pipeline {
                                   userRemoteConfigs: [[credentialsId: 'jenkins', url: 'https://github.com/zkalsk/my-app.git']]
                         ])
 			script {
-				sh "sed -i 's/test:.*/test:v1.0.1/g' nginx.yaml"
-				sh "git add nginx.yaml"
-				sh "git commit -m '[update] image tag change'"
-				sh "git tag -a v1.0.1 -m 'v1.0.1'"
-				sh "git push origin main --tags"
+				sh "sed -i 's/test:.*/test:v1.0.2/g' nginx.yaml"
+				sh "git config user.name jenkins"
+				sh "git config user.email admin@jenkins.com"
+				withCredentials([usernameColonPassword(credentialsId: 'jenkins', usernameVariable: 'zkalsk', passwordVariable: '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')]) {
+						sh "git add nginx.yaml"
+                	                        sh "git commit -m '[update] image tag change'"
+                        	                sh "git tag -a v1.0.2 -m 'v1.0.2'"
+                               	                sh "git push origin main --tags"
+				}
 			}
 		}
 	}
