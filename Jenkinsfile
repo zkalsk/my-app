@@ -3,7 +3,7 @@ pipeline {
     parameters {
         gitParameter name: 'TAG',
         type: 'PT_TAG',
-        defaultValue: 'v1.0'
+        defaultValue: 'v1.1'
     }
     stages {
         stage('checkout code/scm') {
@@ -42,7 +42,7 @@ pipeline {
                         extensions: [],
                         userRemoteConfigs: [[credentialsId: 'jenkins', url: "https://github.com/zkalsk/my-app.git"]]])
                 script {
-                    sh "kustomize edit set image nginx=wlffjaso/test:${params.TAG}"
+                    sh "sed -i 's/test:.*/test:${params.TAG}/g' nginx.yaml"
                     sh "git config user.name zkalsk"
                     sh "git config user.email wlffjaso@gmail.com"
                     withCredentials([usernamePassword(credentialsId: 'jenkins', passwordVariable: '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', usernameVariable: 'zkalsk')]) {
