@@ -42,7 +42,7 @@ pipeline {
 		sh "sed -i 's/test:.*/test:${params.TAG}/g' nginx.yaml"
 		sh "git add nginx.yaml"
 		sh "git commit -m 'update image version'"
-		sshagent(credentials: ['jenkins']) {
+		sshagent(['jenkins']) {
 			sh "git remote set-url origin git@github.com:zkalsk/k8s-manifest.git"
 			sh "git push -u origin main"
 		}
