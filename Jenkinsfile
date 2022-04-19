@@ -49,8 +49,7 @@ pipeline {
                     sh "sed -i 's/test:.*/test:${params.TAG}/g' nginx.yaml"
                     sh "git config user.name zkalsk"
                     sh "git config user.email wlffjaso@gmail.com"
-                    withCredentials([
-		        gitUsernamePassword(credentialsId: 'github-credential',  gitToolName: 'Default')]) {
+                    withCredentials([usernamePassword(credentialsId: 'github-credential', passwordVarible: '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', usernameVariable: 'zkalsk')]) {
                         sh "git add nginx.yaml && git commit -m 'update image' && git push origin main"
                     }
                 }
