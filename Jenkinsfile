@@ -49,6 +49,7 @@ pipeline {
                         sh "git config user.email wlffjaso@gmail.com"
 			sh "git add ."
 			sh "git commit -m 'update image'"
+			sh "git status -s"
 			sh "git push origin main"
                     }
                 }
