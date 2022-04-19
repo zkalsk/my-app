@@ -36,16 +36,24 @@ pipeline {
         }
         stage('update k8s manifest') {
             steps {
-		git credentialsId: 'github-credential',
-		    url: 'https://github.com/zkalsk/k8s-manifest.git',
-		    branch: 'main'
-		sh "sed -i 's/test:.*/test:${params.TAG}/g' nginx.yaml"
-		sh "git add nginx.yaml"
-		sh "git commit -m 'update image version'"
-		sshagent(['jenkins']) {
-			sh "git remote set-url origin git@github.com:zkalsk/k8s-manifest.git"
-			sh "git push -u origin main"
-		}
+		deleteDir()
+                checkout([$class: 'GitSCM',
+                        branches: [[name: "*/main"]],
+                        doGenerateSubmoduleConfigurations: false,
+                        extensions: [],
+                        gitTool: 'Default',
+                        submoduleCfg: [],
+                        userRemoteConfigs: [[url: 'https://github.com/zkalsk/k8s-manifest.git']]
+                    ])
+                script {
+                    sh "sed -i 's/test:.*/test:${params.TAG}/g' nginx.yaml"
+                    sh "git config user.name zkalsk"
+                    sh "git config user.email wlffjaso@gmail.com"
+                    withCredentials([
+		        gitUsernamePassword(credentialsId: 'github-credential',  gitToolName: 'Default')]) {
+                        sh "git add nginx.yaml && git commit -m 'update image' && git push origin main"
+                    }
+                }
             }
         }
     }
