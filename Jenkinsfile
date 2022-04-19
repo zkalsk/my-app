@@ -41,12 +41,12 @@ pipeline {
                     branch: 'main'
 				
                 script {
-                    sh "sed -i 's/test:.*/test:${params.TAG}/g' nginx.yaml"
-                    sh "git config user.name zkalsk"
-                    sh "git config user.email wlffjaso@gmail.com"
                     withCredentials([
 			gitUsernamePassword(credentialsId: 'github-credential',  gitToolName: 'Default')]) {
                         sh "git init"
+			sh "sed -i 's/test:.*/test:${params.TAG}/g' nginx.yaml"
+                        sh "git config user.name zkalsk"
+                        sh "git config user.email wlffjaso@gmail.com"
 			sh "git add ."
 			sh "git commit -m 'update image'"
 			sh "git push origin main"
