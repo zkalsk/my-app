@@ -36,7 +36,7 @@ pipeline {
         }
         stage('update k8s manifest') {
             steps {
-	        deleteDir()
+		deleteDir()
                 checkout([$class: 'GitSCM',
                         branches: [[name: "*/main"]],
                         doGenerateSubmoduleConfigurations: false,
@@ -49,9 +49,12 @@ pipeline {
                     sh "sed -i 's/test:.*/test:${params.TAG}/g' nginx.yaml"
                     sh "git config user.name zkalsk"
                     sh "git config user.email wlffjaso@gmail.com"
-                    withCredentials([
-		        gitUsernamePassword(credentialsId: 'github-credential',  gitToolName: 'Default')]) {
-                        sh "git add nginx.yaml && git commit -m 'update image' && git push origin main"
+                    withCredentials([gitUsernamePassword(credentialsId: 'github-credential',  gitToolName: 'Default')]) {
+                        sh "git init"
+			sh "git add nginx.yaml"
+			sh "git commit -m 'update image'"
+			sh "git remote add origin https://github.com/zkalsk/k8s-manifest.git"
+			sh "git push origin main"
                     }
                 }
             }
