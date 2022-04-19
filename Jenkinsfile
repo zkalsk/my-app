@@ -3,7 +3,7 @@ pipeline {
     parameters {
         gitParameter name: 'TAG',
                      type: 'PT_TAG',
-                     defaultValue: 'v1.0'
+                     defaultValue: 'v1'
     }
     stages {
         stage('checkout code/scm') {
@@ -21,7 +21,7 @@ pipeline {
         stage('build') {
                 steps {
                         script {
-                                dockerImage = docker.build("wlffjaso/test")
+                                dockerImage = docker.build("wlffjaso/test-cicd")
                         }
                 }
         }
