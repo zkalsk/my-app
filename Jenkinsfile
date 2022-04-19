@@ -44,14 +44,15 @@ pipeline {
                         gitTool: 'Default',
                         submoduleCfg: [],
                         userRemoteConfigs: [[url: 'https://github.com/zkalsk/k8s-manifest.git']]
-                    ])
+                ])
                 script {
-                    sh "sed -i 's/test:.*/test:${params.TAG}/g' nginx.yaml"
-	            sh "git add ."
-	            sh "git commit -m 'update image'"
-                    withCredentials([
-		    gitUsernamePassword(credentialsId: 'github-credential',  gitToolName: 'Default')]) {
-		        sh "git push origin main"
+                        sh "sed -i 's/test:.*/test:${params.TAG}/g' nginx.yaml"
+			sh "git config user.name zkalsk"
+			sh "git config user.email wlffjaso@gmail.com"
+	                sh "git add ."
+	                sh "git commit -m 'update image'"
+                        withCredentials([gitUsernamePassword(credentialsId: 'github-credential',  gitToolName: 'Default')]) {
+		            sh "git push origin main"
                     }
                 }
             }
