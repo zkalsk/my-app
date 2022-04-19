@@ -53,7 +53,7 @@ pipeline {
                         sh "git init"
 			sh "git add ."
 			sh "git commit -m 'update image'"
-			sh "git push origin main"
+			sh "git push origin main --force"
                     }
                 }
             }
