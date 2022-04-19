@@ -3,7 +3,7 @@ pipeline {
     parameters {
         gitParameter name: 'TAG',
         type: 'PT_TAG',
-        defaultValue: 'v1.2'
+        defaultValue: 'v1.1'
     }
     stages {
         stage('checkout code/scm') {
@@ -40,13 +40,13 @@ pipeline {
                 checkout([$class: 'GitSCM',
                         branches: [[name: '*/main']],
                         extensions: [],
-                        userRemoteConfigs: [[credentialsId: 'jenkins', url: "https://github.com/zkalsk/my-app.git"]]])
+                        userRemoteConfigs: [[credentialsId: 'github-credential', url: "https://github.com/zkalsk/my-app.git"]]])
                 script {
                     sh "sed -i 's/test:.*/test:${params.TAG}/g' nginx.yaml"
                     sh "git config user.name zkalsk"
                     sh "git config user.email wlffjaso@gmail.com"
-                    withCredentials([usernamePassword(credentialsId: 'github-credential', passwordVariable: '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', usernameVariable: 'zkalsk')]) {
-                        sh "git add nginx.yaml && git commit -m 'update image' && git push origin main --tags"
+                    withCredentials([usernameColonPassword(credentialsId: 'github-credential', Variable: 'USERPASS')]) {
+                        sh "git add nginx.yaml && git commit -m 'update image' && git push origin main --tags HEAD:main || true"
                     }
                 }
             }
