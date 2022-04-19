@@ -53,7 +53,6 @@ pipeline {
                         sh "git init"
 			sh "git add nginx.yaml"
 			sh "git commit -m 'update image'"
-			sh "git remote add origin https://github.com/zkalsk/k8s-manifest.git"
 			sh "git push origin main"
                     }
                 }
