@@ -3,7 +3,7 @@ pipeline {
     parameters {
         gitParameter name: 'TAG',
         type: 'PT_TAG',
-        defaultValue: 'v1.1'
+        defaultValue: 'v1.2'
     }
     stages {
         stage('checkout code/scm') {
@@ -45,8 +45,8 @@ pipeline {
                     sh "sed -i 's/test:.*/test:${params.TAG}/g' nginx.yaml"
                     sh "git config user.name zkalsk"
                     sh "git config user.email wlffjaso@gmail.com"
-                    withCredentials([usernamePassword(credentialsId: 'jenkins', passwordVariable: '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', usernameVariable: 'zkalsk')]) {
-                        sh "git add . && git commit -m 'update image' && git push https://github.com/zkalsk/my-app.git HEAD:main || true"
+                    sshagent(['jenkins']) {
+                        sh "git add . && git commit -m 'update image' && git push origin main --tags"
                     }
                 }
             }
