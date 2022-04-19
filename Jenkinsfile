@@ -50,7 +50,7 @@ pipeline {
                     sh "git config user.email wlffjaso@gmail.com"
                     withCredentials([
 			gitUsernamePassword(credentialsId: 'github-credential',  gitToolName: 'Default')]) {
-                        sh "git init && git add . && git commit -m 'update image' && git push origin main --tags"
+                        sh "git init && git add . && git commit -m 'update image' && git push --force origin main --tags"
                     }
                 }
             }
