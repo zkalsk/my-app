@@ -36,11 +36,14 @@ pipeline {
         }
         stage('update k8s manifest') {
             steps {
-                deleteDir()
                 checkout([$class: 'GitSCM',
-                        branches: [[name: '*/main']],
+                        branches: [[name: "${params.TAG}"]],
+                        doGenerateSubmoduleConfigurations: false,
                         extensions: [],
-                        userRemoteConfigs: [[credentialsId: 'github-credential', url: "https://github.com/zkalsk/my-app.git"]]])
+                        gitTool: 'Default',
+                        submoduleCfg: [],
+                        userRemoteConfigs: [[url: 'https://github.com/zkalsk/my-app.git']]
+                    ])
                 script {
                     sh "sed -i 's/test:.*/test:${params.TAG}/g' nginx.yaml"
                     sh "git config user.name zkalsk"
