@@ -47,10 +47,12 @@ pipeline {
                 ])
                 script {
                         sh "sed -i 's/test:.*/test:${params.TAG}/g' nginx.yaml"
-			sh "git config user.name zkalsk"
-			sh "git config user.email wlffjaso@gmail.com"
+			sh "git config --global user.name 'zkalsk'"
+			sh "git config --global user.email 'wlffjaso@gmail.com'"
 	                sh "git add ."
 	                sh "git commit -m 'update image'"
+                        sh "git remote -v"
+                        sh "git status"
                         withCredentials([gitUsernamePassword(credentialsId: 'github-credential',  gitToolName: 'Default')]) {
 		            sh "git push origin main"
                     }
