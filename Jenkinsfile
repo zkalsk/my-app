@@ -51,7 +51,7 @@ pipeline {
                     sh "git config user.email wlffjaso@gmail.com"
                     withCredentials([gitUsernamePassword(credentialsId: 'github-credential',  gitToolName: 'Default')]) {
                         sh "git init"
-			sh "git add nginx.yaml"
+			sh "git add ."
 			sh "git commit -m 'update image'"
 			sh "git push origin main"
                     }
