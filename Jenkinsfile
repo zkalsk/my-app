@@ -53,8 +53,8 @@ pipeline {
 	                sh "git commit -m 'update image'"
                         sh "git remote -v"
                         sh "git status"
-                        withCredentials([gitUsernamePassword(credentialsId: 'github-credential',  gitToolName: 'Default')]) {
-		            sh "git push origin main"
+                        withCredentials([gitUsernamePassword(credentialsId: 'github-credential',  gitToolName: 'git-tool')]) {
+		            sh "git push origin HEAD:main"
                     }
                 }
             }
