@@ -46,7 +46,7 @@ pipeline {
                         userRemoteConfigs: [[url: 'https://github.com/zkalsk/k8s-manifest.git']]
                 ])
                 script {
-                        sh "sed -i 's/test:.*/test:${params.TAG}/g' nginx.yaml"
+                        sh "sed -i 's/test:.*/test-cicd:${params.TAG}/g' nginx.yaml"
 			sh "git config --global user.name 'zkalsk'"
 			sh "git config --global user.email 'wlffjaso@gmail.com'"
 	                sh "git add ."
