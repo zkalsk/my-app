@@ -3,7 +3,7 @@ pipeline {
     parameters {
         gitParameter name: 'TAG',
         type: 'PT_TAG',
-        defaultValue: 'v1.1'
+        defaultValue: 'v1.2'
     }
     stages {
         stage('checkout code/scm') {
@@ -36,8 +36,8 @@ pipeline {
         }
         stage('update k8s manifest') {
             steps {
-		deleteDir()
-		checkout([$class: 'GitSCM',
+                deleteDir()
+                checkout([$class: 'GitSCM',
                         branches: [[name: "*/main"]],
                         doGenerateSubmoduleConfigurations: false,
                         extensions: [],
@@ -46,11 +46,11 @@ pipeline {
                         userRemoteConfigs: [[url: 'https://github.com/zkalsk/k8s-manifest.git']]
                 ])
                 script {
-                        sh "sed -i 's/test-cicd:.*/test-cicd:${params.TAG}/g' nginx.yaml"
-			sh "git config --global user.name 'zkalsk'"
+                        sh "git config --global user.name 'zkalsk'"
 			sh "git config --global user.email 'wlffjaso@gmail.com'"
+                        sh "cd ./base && kustomize edit set image nginx=wlffjaso/test-cicd:${params.TAG}"
 	                sh "git add ."
-	                sh "git commit -m 'update image'"
+	                sh "git commit -m 'update image version ${params.TAG}'"
                         sh "git remote -v"
                         sh "git status"
                         withCredentials([gitUsernamePassword(credentialsId: 'github-credential',  gitToolName: 'git-tool')]) {
