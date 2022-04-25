@@ -3,7 +3,7 @@ pipeline {
     parameters {
         gitParameter name: 'TAG',
         type: 'PT_TAG',
-        defaultValue: 'v1.2'
+        defaultValue: 'v1.3'
     }
     stages {
         stage('checkout code/scm') {
@@ -43,19 +43,34 @@ pipeline {
                         extensions: [],
                         gitTool: 'Default',
                         submoduleCfg: [],
-                        userRemoteConfigs: [[url: 'https://github.com/zkalsk/k8s-manifest.git']]
+                        userRemoteConfigs: [[url: 'https://github.com/zkalsk/helm-chart.git']]
                 ])
                 script {
-                        sh "git config --global user.name 'zkalsk'"
-			sh "git config --global user.email 'wlffjaso@gmail.com'"
-                        sh "cd ./base && kustomize edit set image nginx=wlffjaso/test-cicd:${params.TAG}"
-	                sh "git add ."
-	                sh "git commit -m 'update image version ${params.TAG}'"
-                        sh "git remote -v"
-                        sh "git status"
-                        withCredentials([gitUsernamePassword(credentialsId: 'github-credential',  gitToolName: 'git-tool')]) {
-		            sh "git push origin HEAD:main"
-                    }
+		    def value = readYaml file: "values.yaml"
+                    value.image.tag = "${params.TAG}"
+		    sh "rm -f values.yaml"
+		    writeYaml file: "values.yaml", data: value
+                    sh 'cat values.yaml'
+				
+   		    def chart = readYaml file: "Chart.yaml"
+                    chart.appVersion = "${params.TAG}"
+		    chart.version = "${params.TAG}"
+		    sh "rm -f Chart.yaml"
+		    writeYaml file: "Chart.yaml", data: chart
+                    sh 'cat Chart.yaml'
+				
+		    sh "helm repo index ."
+		    sh "helm package ."
+				
+		    sh "git config --global user.name 'zkalsk'"
+	            sh "git config --global user.email 'wlffjaso@gmail.com'"
+	            sh "git add ."
+	            sh "git commit -m 'update image version ${params.TAG}'"
+                    sh "git remote -v"
+                    sh "git status"
+                    withCredentials([gitUsernamePassword(credentialsId: 'github-credential',  gitToolName: 'git-tool')]) {
+	                sh "git push origin HEAD:main"
+		    }
                 }
             }
         }
